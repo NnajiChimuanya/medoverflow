@@ -5,6 +5,7 @@ import { workerData } from "worker_threads";
 import express, { Request, Response, Express } from "express";
 import dotenv from "dotenv";
 dotenv.config();
+import authRouter from "./route/authRoute";
 
 if (cluster.isMaster) {
   const cpus = os.cpus().length;
@@ -29,6 +30,7 @@ if (cluster.isMaster) {
     console.log("Recordry user microservice");
     res.send("Recordry user microservice");
   });
+  app.use("/auth", authRouter);
 
   app.listen(port, () =>
     console.log(`${cluster.worker?.id} Hello, server running`)

@@ -37,3 +37,5 @@ const userSchema = new Schema({
         type: [String],
     },
 });
+const user = mongoose_1.default.model("user", userSchema);
+exports.default = user;

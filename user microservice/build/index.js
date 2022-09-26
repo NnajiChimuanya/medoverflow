@@ -9,6 +9,7 @@ const worker_threads_1 = require("worker_threads");
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
+const authRoute_1 = __importDefault(require("./route/authRoute"));
 if (cluster_1.default.isMaster) {
     const cpus = os_1.default.cpus().length;
     console.log(`Forking for ${cpus}`);
@@ -30,5 +31,6 @@ else {
         console.log("Recordry user microservice");
         res.send("Recordry user microservice");
     });
+    app.use("/auth", authRoute_1.default);
     app.listen(port, () => { var _a; return console.log(`${(_a = cluster_1.default.worker) === null || _a === void 0 ? void 0 : _a.id} Hello, server running`); });
 }
