@@ -5,6 +5,7 @@ import { workerData } from "worker_threads";
 import express, { Request, Response, Express } from "express";
 import dotenv from "dotenv";
 dotenv.config();
+
 import authRouter from "./route/authRoute";
 
 if (cluster.isMaster) {
@@ -25,6 +26,8 @@ if (cluster.isMaster) {
 } else {
   const app: Express = express();
   const port = process.env.PORT || 3000;
+
+  app.use(express.json());
 
   app.get("/", (req: Request, res: Response) => {
     console.log("Recordry user microservice");

@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.signup = void 0;
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password, confirmPassword, firstName, lastName } = req === null || req === void 0 ? void 0 : req.body;
-    res.json({ email, password, firstName, lastName });
+    const { email, password, firstName, lastName, intrests } = req.body;
+    res.json({ email, password, firstName, lastName, intrests });
 });
 exports.signup = signup;

@@ -1,8 +1,21 @@
 import { Response, Request } from "express";
-import user from "../model/userModel";
+import mongoose, { Document } from "mongoose";
+import IUser from "../interface/userInterface";
 
-export const signup = async (req: Request, res: Response) => {
-  const { email, password, confirmPassword, firstName, lastName } = req?.body;
+interface personModel extends Request {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  firstName: string;
+  lastName: string;
+  intrests: string[];
+}
 
-  res.json({ email, password, firstName, lastName });
+export const signup = async (
+  req: Request<{}, {}, personModel>,
+  res: Response
+) => {
+  const { email, password, firstName, lastName, intrests } = req.body;
+
+  res.json({ email, password, firstName, lastName, intrests });
 };

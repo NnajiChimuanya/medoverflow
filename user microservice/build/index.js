@@ -27,6 +27,7 @@ if (cluster_1.default.isMaster) {
 else {
     const app = (0, express_1.default)();
     const port = process.env.PORT || 3000;
+    app.use(express_1.default.json());
     app.get("/", (req, res) => {
         console.log("Recordry user microservice");
         res.send("Recordry user microservice");
