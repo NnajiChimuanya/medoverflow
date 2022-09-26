@@ -1,17 +1,9 @@
 import mongoose, { model, Document } from "mongoose";
 import { Interface } from "readline";
+import IUser from "../interface/userInterface";
 const Schema = mongoose.Schema;
 import pkg from "validator";
 const { isEmail } = pkg;
-
-interface IUser extends Document {
-  email: string;
-  password: string;
-  verified: boolean;
-  firstName: string;
-  lastName: string;
-  intrests: string[];
-}
 
 const userSchema = new Schema({
   email: {
