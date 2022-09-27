@@ -9,6 +9,7 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const authRoute_1 = __importDefault(require("./route/authRoute"));
+const mongoose_1 = __importDefault(require("mongoose"));
 if (cluster_1.default.isMaster) {
     const cpus = os_1.default.cpus().length;
     console.log(`Forking for ${cpus}`);
@@ -33,5 +34,9 @@ else {
         res.send("Recordry user microservice");
     });
     app.use("/auth", authRoute_1.default);
+    mongoose_1.default
+        .connect("mongodb://localhost:27017/medoverflow?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false")
+        .then(() => console.log("connected to the database"))
+        .catch((err) => console.log(err));
     app.listen(port, () => { var _a; return console.log(`${(_a = cluster_1.default.worker) === null || _a === void 0 ? void 0 : _a.id} Hello, server running`); });
 }

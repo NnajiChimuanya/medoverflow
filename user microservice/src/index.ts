@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import authRouter from "./route/authRoute";
+import mongoose from "mongoose";
 
 if (cluster.isMaster) {
   const cpus = os.cpus().length;
@@ -35,6 +36,13 @@ if (cluster.isMaster) {
     res.send("Recordry user microservice");
   });
   app.use("/auth", authRouter);
+
+  mongoose
+    .connect(
+      "mongodb://localhost:27017/medoverflow?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
+    )
+    .then(() => console.log("connected to the database"))
+    .catch((err) => console.log(err));
 
   app.listen(port, () =>
     console.log(`${cluster.worker?.id} Hello, server running`)

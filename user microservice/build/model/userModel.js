@@ -10,25 +10,25 @@ const { isEmail } = validator_1.default;
 const userSchema = new Schema({
     email: {
         type: String,
-        required: [true, "email required"],
-        unique: [true, "email already exists"],
-        validate: [isEmail, "enter valid email"],
+        required: [true, "Email required"],
+        unique: [true, "Email already exists"],
+        validate: [isEmail, "Enter valid email"],
     },
     password: {
         type: String,
         required: [true, "Please enter password"],
-        minlength: [6, "minimum password length is 6"],
+        minlength: [6, "Minimum password length is 6"],
     },
     verified: {
         type: Boolean,
     },
     firstName: {
         type: String,
-        required: [true, "firstname required"],
+        required: [true, "Firstname required"],
     },
     lastName: {
         type: String,
-        required: [true, "lastname required"],
+        required: [true, "Lastname required"],
     },
     department: {
         type: String,

@@ -15,9 +15,15 @@ interface personModel extends Request {
 const handleError = (err: any) => {
   let error = { error: "An error occurred" };
 
-  if (err.message.includes("enter valid email")) {
+  if (err.message) {
     error = {
-      error: "Enter valid email",
+      error: err.message.split(":")[2],
+    };
+  }
+
+  if (err.code === 11000) {
+    error = {
+      error: "Email already exists",
     };
   }
 
