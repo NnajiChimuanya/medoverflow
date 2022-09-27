@@ -8,10 +8,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.signup = void 0;
+const userModel_1 = __importDefault(require("../model/userModel"));
+// const handleError = (err : any) => {
+//   let error : { }
+//   return error;
+// }
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password, firstName, lastName, intrests } = req.body;
-    res.json({ email, password, firstName, lastName, intrests });
+    const { email, password, confirmPassword, firstName, lastName, department, intrests, } = req.body;
+    if (password === confirmPassword) {
+        try {
+            let newUser = userModel_1.default.create({
+                email,
+                password,
+                firstName,
+                lastName,
+                department,
+                intrests,
+            });
+            res.json(newUser);
+        }
+        catch (err) {
+            console.log(err);
+            // let error = handleError(err);
+        }
+    }
+    else {
+        res.json({
+            error: "passwords dont match",
+        });
+    }
 });
 exports.signup = signup;

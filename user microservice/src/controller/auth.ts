@@ -1,6 +1,5 @@
 import { Response, Request } from "express";
-import mongoose, { Document } from "mongoose";
-import IUser from "../interface/userInterface";
+import user from "../model/userModel";
 
 interface personModel extends Request {
   email: string;
@@ -8,14 +7,45 @@ interface personModel extends Request {
   confirmPassword: string;
   firstName: string;
   lastName: string;
+  department: string;
   intrests: string[];
 }
 
-export const signup = async (
-  req: Request<{}, {}, personModel>,
-  res: Response
-) => {
-  const { email, password, firstName, lastName, intrests } = req.body;
+// const handleError = (err : any) => {
+//   let error : { }
 
-  res.json({ email, password, firstName, lastName, intrests });
+//   return error;
+// }
+
+export const signup = async (req: Request<personModel>, res: Response) => {
+  const {
+    email,
+    password,
+    confirmPassword,
+    firstName,
+    lastName,
+    department,
+    intrests,
+  } = req.body;
+
+  if (password === confirmPassword) {
+    try {
+      let newUser = user.create({
+        email,
+        password,
+        firstName,
+        lastName,
+        department,
+        intrests,
+      });
+      res.json(newUser);
+    } catch (err: any) {
+      console.log(err);
+      // let error = handleError(err);
+    }
+  } else {
+    res.json({
+      error: "passwords dont match",
+    });
+  }
 };
