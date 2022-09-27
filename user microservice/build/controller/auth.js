@@ -14,15 +14,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.signup = void 0;
 const userModel_1 = __importDefault(require("../model/userModel"));
-// const handleError = (err : any) => {
-//   let error : { }
-//   return error;
-// }
+//Error handler
+const handleError = (err) => {
+    let error = { error: "An error occurred" };
+    if (err.message.includes("enter valid email")) {
+        error = {
+            error: "Enter valid email",
+        };
+    }
+    return error;
+};
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, confirmPassword, firstName, lastName, department, intrests, } = req.body;
     if (password === confirmPassword) {
         try {
-            let newUser = userModel_1.default.create({
+            let newUser = yield userModel_1.default.create({
                 email,
                 password,
                 firstName,
@@ -33,8 +39,8 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             res.json(newUser);
         }
         catch (err) {
-            console.log(err);
-            // let error = handleError(err);
+            let error = handleError(err);
+            res.json(error);
         }
     }
     else {
