@@ -137,3 +137,9 @@ export const signup = async (req: Request<personModel>, res: Response) => {
     });
   }
 };
+
+export const confirmEmail = async (req: Request, res: Response) => {
+  res.json({
+    message: "Email verified",
+  });
+};

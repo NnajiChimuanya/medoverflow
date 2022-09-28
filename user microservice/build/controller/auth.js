@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.signup = void 0;
+exports.confirmEmail = exports.signup = void 0;
 const userModel_1 = __importDefault(require("../model/userModel"));
 const nodemailer_1 = require("../nodemailer");
 const uuid_1 = require("uuid");
@@ -122,3 +122,9 @@ const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.signup = signup;
+const confirmEmail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.json({
+        message: "Email verified",
+    });
+});
+exports.confirmEmail = confirmEmail;
