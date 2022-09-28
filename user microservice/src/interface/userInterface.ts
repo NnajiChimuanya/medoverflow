@@ -1,3 +1,5 @@
+import mongoose, { ObjectId } from "mongoose";
+
 interface IUser extends Document {
   email: string;
   password: string;
@@ -5,6 +7,8 @@ interface IUser extends Document {
   firstName: string;
   lastName: string;
   intrests: string[];
+  _id?: ObjectId;
+  _v?: number;
 }
 
 export default IUser;

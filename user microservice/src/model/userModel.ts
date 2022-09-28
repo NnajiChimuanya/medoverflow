@@ -1,4 +1,4 @@
-import mongoose, { model, Document } from "mongoose";
+import mongoose from "mongoose";
 import { Interface } from "readline";
 import IUser from "../interface/userInterface";
 const Schema = mongoose.Schema;

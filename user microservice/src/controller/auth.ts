@@ -1,6 +1,8 @@
 import { Response, Request } from "express";
 import user from "../model/userModel";
+import IUser from "../interface/userInterface";
 import { transporter } from "../nodemailer";
+import { v4 as uuidv4 } from "uuid";
 
 //creating interface for the request body
 interface personModel extends Request {
@@ -41,6 +43,36 @@ const handleError = (err: any) => {
   return error;
 };
 
+//
+//
+//
+// sendng verification mail function
+const sendVerificationMail = (user: IUser, res: Response) => {
+  let { _id, email } = user;
+  let url = process.env.email_url;
+  let uniqueString = uuidv4() + _id;
+
+  //creating email
+  const mailOptions = {
+    from: process.env.email,
+    to: email,
+    subject: "Verify email",
+    html: `<p> Verify your email address to complete signup and login </p>
+            Expires in <b> 6 hours </b?  
+            <p> Click <a href="${url}/user/verify/${_id}/${uniqueString}"> here </a> to verify</p>`,
+  };
+
+  transporter
+    .sendMail(mailOptions)
+    .then(() => {
+      res.json({
+        status: "PENDING",
+        message: "email sent",
+      });
+    })
+    .catch((err) => console.log(err));
+};
+
 export const signup = async (req: Request<personModel>, res: Response) => {
   const {
     email,
@@ -63,7 +95,13 @@ export const signup = async (req: Request<personModel>, res: Response) => {
         intrests,
         verified: false,
       });
-      res.json(newUser);
+      if (newUser) {
+        sendVerificationMail(newUser, res);
+      } else {
+        res.json({
+          error: "Error occurred with saving user",
+        });
+      }
     } catch (err: any) {
       let error = handleError(err);
       res.json(error);

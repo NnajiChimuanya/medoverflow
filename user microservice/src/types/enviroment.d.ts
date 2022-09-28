@@ -6,6 +6,7 @@ declare global {
       mongo_uri: string;
       email: string;
       email_password: string;
+      email_url: string;
     }
   }
 }
