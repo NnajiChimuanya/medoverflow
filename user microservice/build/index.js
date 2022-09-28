@@ -35,7 +35,7 @@ else {
     });
     app.use("/auth", authRoute_1.default);
     mongoose_1.default
-        .connect("mongodb://localhost:27017/medoverflow?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false")
+        .connect(process.env.mongo_uri)
         .then(() => console.log("connected to the database"))
         .catch((err) => console.log(err));
     app.listen(port, () => { var _a; return console.log(`${(_a = cluster_1.default.worker) === null || _a === void 0 ? void 0 : _a.id} Hello, server running`); });

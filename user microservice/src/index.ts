@@ -38,9 +38,7 @@ if (cluster.isMaster) {
   app.use("/auth", authRouter);
 
   mongoose
-    .connect(
-      "mongodb://localhost:27017/medoverflow?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
-    )
+    .connect(process.env.mongo_uri)
     .then(() => console.log("connected to the database"))
     .catch((err) => console.log(err));
 
