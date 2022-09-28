@@ -4,6 +4,7 @@ import IUser from "../interface/userInterface";
 const Schema = mongoose.Schema;
 import pkg from "validator";
 const { isEmail } = pkg;
+import bcrypt from "bcrypt";
 
 const userSchema = new Schema({
   email: {
@@ -34,6 +35,12 @@ const userSchema = new Schema({
   intrests: {
     type: [String],
   },
+});
+
+userSchema.pre<IUser>("save", async function (next) {
+  const salt = await bcrypt.genSalt();
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
 });
 
 const user = mongoose.model<IUser>("user", userSchema);
