@@ -16,6 +16,8 @@ exports.signup = void 0;
 const userModel_1 = __importDefault(require("../model/userModel"));
 const nodemailer_1 = require("../nodemailer");
 const uuid_1 = require("uuid");
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const userVerification_1 = __importDefault(require("../model/userVerification"));
 //verifying accessibility
 // transporter.verify((err, success) => {
 //   if (err) {
@@ -43,7 +45,7 @@ const handleError = (err) => {
 //
 //
 // sendng verification mail function
-const sendVerificationMail = (user, res) => {
+const sendVerificationMail = (user, res) => __awaiter(void 0, void 0, void 0, function* () {
     let { _id, email } = user;
     let url = process.env.email_url;
     let uniqueString = (0, uuid_1.v4)() + _id;
@@ -56,16 +58,36 @@ const sendVerificationMail = (user, res) => {
             Expires in <b> 6 hours </b?  
             <p> Click <a href="${url}/user/verify/${_id}/${uniqueString}"> here </a> to verify</p>`,
     };
-    nodemailer_1.transporter
-        .sendMail(mailOptions)
-        .then(() => {
-        res.json({
-            status: "PENDING",
-            message: "email sent",
+    const salt = yield bcrypt_1.default.genSalt();
+    bcrypt_1.default
+        .hash(uniqueString, salt)
+        .then((hashedUniqueString) => {
+        let newVerification = new userVerification_1.default({
+            userId: _id,
+            uniqueString: hashedUniqueString,
+            createdAt: Date.now(),
+            expiresAt: Date.now() + 216000,
         });
+        newVerification
+            .save()
+            .then(() => {
+            nodemailer_1.transporter
+                .sendMail(mailOptions)
+                .then(() => {
+                res.json({
+                    status: "PENDING",
+                    message: "email sent",
+                });
+            })
+                .catch((err) => console.log(err));
+        })
+            .catch((err) => handleError(err));
     })
-        .catch((err) => console.log(err));
-};
+        .catch((err) => res.json({
+        status: "failed",
+        message: "An error occurred while hashing unique password",
+    }));
+});
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, confirmPassword, firstName, lastName, department, intrests, } = req.body;
     if (password === confirmPassword) {

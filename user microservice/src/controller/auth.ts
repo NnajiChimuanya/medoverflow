@@ -3,6 +3,8 @@ import user from "../model/userModel";
 import IUser from "../interface/userInterface";
 import { transporter } from "../nodemailer";
 import { v4 as uuidv4 } from "uuid";
+import bcrypt from "bcrypt";
+import userVerification from "../model/userVerification";
 
 //creating interface for the request body
 interface personModel extends Request {
@@ -47,7 +49,7 @@ const handleError = (err: any) => {
 //
 //
 // sendng verification mail function
-const sendVerificationMail = (user: IUser, res: Response) => {
+const sendVerificationMail = async (user: IUser, res: Response) => {
   let { _id, email } = user;
   let url = process.env.email_url;
   let uniqueString = uuidv4() + _id;
@@ -62,15 +64,38 @@ const sendVerificationMail = (user: IUser, res: Response) => {
             <p> Click <a href="${url}/user/verify/${_id}/${uniqueString}"> here </a> to verify</p>`,
   };
 
-  transporter
-    .sendMail(mailOptions)
-    .then(() => {
-      res.json({
-        status: "PENDING",
-        message: "email sent",
+  const salt = await bcrypt.genSalt();
+  bcrypt
+    .hash(uniqueString, salt)
+    .then((hashedUniqueString) => {
+      let newVerification = new userVerification({
+        userId: _id,
+        uniqueString: hashedUniqueString,
+        createdAt: Date.now(),
+        expiresAt: Date.now() + 216000,
       });
+
+      newVerification
+        .save()
+        .then(() => {
+          transporter
+            .sendMail(mailOptions)
+            .then(() => {
+              res.json({
+                status: "PENDING",
+                message: "email sent",
+              });
+            })
+            .catch((err) => console.log(err));
+        })
+        .catch((err) => handleError(err));
     })
-    .catch((err) => console.log(err));
+    .catch((err) =>
+      res.json({
+        status: "failed",
+        message: "An error occurred while hashing unique password",
+      })
+    );
 };
 
 export const signup = async (req: Request<personModel>, res: Response) => {
