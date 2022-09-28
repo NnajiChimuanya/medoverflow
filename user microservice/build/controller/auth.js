@@ -14,6 +14,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.signup = void 0;
 const userModel_1 = __importDefault(require("../model/userModel"));
+const nodemailer_1 = require("../nodemailer");
+//verifying accessibility
+nodemailer_1.transporter.verify((err, success) => {
+    if (err) {
+        console.log(err);
+    }
+    else {
+        console.log(success);
+    }
+});
 //Error handler
 const handleError = (err) => {
     let error = { error: "An error occurred" };

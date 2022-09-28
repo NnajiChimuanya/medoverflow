@@ -1,6 +1,8 @@
 import { Response, Request } from "express";
 import user from "../model/userModel";
+import { transporter } from "../nodemailer";
 
+//creating interface for the request body
 interface personModel extends Request {
   email: string;
   password: string;
@@ -10,6 +12,15 @@ interface personModel extends Request {
   department: string;
   intrests: string[];
 }
+
+//verifying accessibility
+// transporter.verify((err, success) => {
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log(success);
+//   }
+// });
 
 //Error handler
 const handleError = (err: any) => {
@@ -50,6 +61,7 @@ export const signup = async (req: Request<personModel>, res: Response) => {
         lastName,
         department,
         intrests,
+        verified: false,
       });
       res.json(newUser);
     } catch (err: any) {
